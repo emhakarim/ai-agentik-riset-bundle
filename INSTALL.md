@@ -4,7 +4,8 @@ Berkas ini ditulis untuk dibaca **agen AI** (Claude Code, Antigravity, Codex) ya
 ini. Pengguna cukup menempelkan prompt seperti:
 
 > Pasang toolkit dari https://github.com/emhakarim/ai-agentik-riset-bundle sesuai INSTALL.md, langkah demi langkah.
-> Pasang skill dan server MCP secara global, bukan di folder proyek. Jelaskan tiap perintah dan minta izin saya.
+> Pasang secara GLOBAL untuk semua proyek: skill ke folder skill global agen ini dan server MCP di konfigurasi
+> tingkat pengguna, bukan di folder proyek yang sedang dibuka. Jelaskan tiap perintah dan minta izin saya.
 
 ## Target: pasang GLOBAL, bukan di folder proyek
 
