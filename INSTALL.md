@@ -4,21 +4,22 @@ Berkas ini ditulis untuk dibaca **agen AI** (Claude Code, Antigravity, Codex) ya
 ini. Pengguna cukup menempelkan prompt seperti:
 
 > Pasang toolkit dari https://github.com/emhakarim/ai-agentik-riset-bundle sesuai INSTALL.md, langkah demi langkah.
-> Pasang secara GLOBAL untuk semua proyek: skill ke folder skill global agen ini dan server MCP di konfigurasi
-> tingkat pengguna, bukan di folder proyek yang sedang dibuka. Jelaskan tiap perintah dan minta izin saya.
+> Pasang secara GLOBAL untuk semua proyek: skill ke folder skill global agen ini dan perintah edu-stats yang bisa
+> dipanggil dari folder mana pun, bukan di folder proyek yang sedang dibuka. Jelaskan tiap perintah dan minta izin saya.
 
 ## Target: pasang GLOBAL, bukan di folder proyek
 
-Tujuan pemasangan ini adalah toolkit yang bisa dipakai pengguna **di semua proyek**, dari folder mana pun:
+Tujuan pemasangan ini adalah toolkit yang bisa dipakai pengguna **di semua proyek**, dari folder mana pun. Cara utama
+adalah **skill + CLI**: skill memandu agen, dan perintah terminal `edu-stats` yang menghitung. Server MCP opsional.
 
 - **Skill** disalin ke folder skill **global** agen (tabel di langkah 4), misalnya `~/.claude/skills/` untuk Claude
   Code. **Jangan** menyalin skill ke folder kerja atau proyek yang sedang dibuka (`./.claude/skills/`,
   `./.agents/skills/`, `./.agent/skills/`), kecuali pengguna memintanya secara eksplisit.
-- **Server MCP** didaftarkan di konfigurasi **tingkat pengguna** (langkah 3): `claude mcp add --scope user`,
-  `~/.claude.json`, `mcp_config.json` global Antigravity, atau `~/.codex/config.toml`. **Jangan** membuat `.mcp.json`
-  atau konfigurasi MCP di dalam folder proyek.
+- **Perintah `edu-stats` dan `paper-check`** dibuat bisa dipanggil dari folder mana pun (langkah 2b).
+- **Server MCP (opsional, langkah 3)**: hanya bila pengguna memintanya. Bila dipasang, daftarkan di konfigurasi
+  **tingkat pengguna**, jangan membuat `.mcp.json` atau konfigurasi MCP di dalam folder proyek.
 - **Folder repo** hanyalah tempat unduhan dan virtualenv. Simpan di lokasi tetap di luar proyek, bawaan
-  `~/ai-agentik-riset-bundle`, karena server MCP menunjuk ke virtualenv di dalamnya; jangan menghapus atau
+  `~/ai-agentik-riset-bundle`, karena perintah `edu-stats` menunjuk ke virtualenv di dalamnya; jangan menghapus atau
   memindahkannya setelah terpasang.
 - Bila agen hanya diizinkan menulis di folder kerja (sandbox), jelaskan itu ke pengguna dan minta izin menulis ke
   folder global, atau berikan perintahnya agar pengguna menjalankannya sendiri. Jangan diam-diam beralih ke folder
@@ -131,9 +132,31 @@ VENVPY -m paper_tools.cli --help
 Cek pustaka yang terpasang: `VENVPY -m pip list`. Perintah uji pertama menampilkan daftar alat statistik; perintah kedua menampilkan subperintah `paper-check` (gate,
 claims, numbers, refs, …). Perintah `paper-check` juga tersedia di folder `Scripts` (Windows) atau `bin` venv.
 
-## Langkah 3 · Daftarkan server MCP
+## Langkah 2b · Jadikan `edu-stats` dan `paper-check` perintah global
 
-Ada dua server, keduanya stdio dan memakai `VENVPY` (path absolut):
+Setelah langkah 2, kedua perintah ada di folder `Scripts` (Windows) atau `bin` (macOS/Linux) virtualenv. Buat
+pemanggil kecil di folder yang sudah ada di PATH pengguna, supaya bisa dipanggil dari folder mana pun:
+
+- **Windows:** cari folder di PATH yang bisa ditulis pengguna, mis. folder `Scripts` Python dasar
+  (`py -3 -c "import sysconfig; print(sysconfig.get_path('scripts'))"`) atau `%USERPROFILE%\.local\bin` (bila sudah di
+  PATH). Buat `edu-stats.cmd` di sana berisi dua baris:
+  ```
+  @echo off
+  "<repo absolut>\mcp-edu-stats\.venv\Scripts\edu-stats.exe" %*
+  ```
+  dan `paper-check.cmd` yang sama dengan `paper-check.exe`. Untuk Git Bash, tambahkan juga skrip tanpa ekstensi
+  `edu-stats` berisi `#!/bin/sh` lalu `exec "<repo dalam format /c/...>/mcp-edu-stats/.venv/Scripts/edu-stats.exe" "$@"`.
+- **macOS/Linux:** `mkdir -p ~/.local/bin && ln -sf <repo>/mcp-edu-stats/.venv/bin/edu-stats ~/.local/bin/edu-stats`
+  (sama untuk `paper-check`); pastikan `~/.local/bin` ada di PATH.
+- Jangan mengubah PATH sistem; bila tidak ada folder PATH yang cocok, tanyakan pengguna.
+- **Uji dari folder lain** (mis. folder home): `edu-stats list` dan `edu-stats help ttest_independent`, lalu
+  `edu-stats run descriptives file=<repo>/data/data_survei_resiliensi_300.csv columns=Pre_Test,Post_Test`.
+  Parameter daftar ditulis dipisah koma tanpa tanda kutip, sama di semua shell.
+
+## Langkah 3 · (Opsional) Daftarkan server MCP
+
+Lewati langkah ini kecuali pengguna memintanya; skill sudah bekerja lewat perintah `edu-stats`. Bila diminta, ada
+dua server, keduanya stdio dan memakai `VENVPY` (path absolut):
 
 | Nama | Perintah |
 |---|---|
@@ -250,16 +273,14 @@ tanpa bertanya.
 
 ## Langkah 5 · Muat ulang dan uji
 
-1. Minta pengguna memulai ulang sesi agen (server MCP dan skill dimuat saat sesi dibuka).
-2. Di sesi baru, uji dengan data contoh repo:
-   - "Jalankan descriptives pada `data/data_survei_resiliensi_300.csv` untuk kolom Pre_Test dan Post_Test lewat
-     edu-stats." Agen harus memanggil alat MCP `edu-stats`, bukan menghitung sendiri.
-   - Bila alat MCP belum muncul, gunakan CLI dari folder repo. Penulisan tanda kutip berbeda per shell:
-     - PowerShell: `VENVPY -m edu_stats.cli run descriptives file=data/data_survei_resiliensi_300.csv columns='[\"Pre_Test\",\"Post_Test\"]'`
-     - cmd: `VENVPY -m edu_stats.cli run descriptives file=data/data_survei_resiliensi_300.csv columns="[\"Pre_Test\",\"Post_Test\"]"`
-     - bash/zsh: `VENVPY -m edu_stats.cli run descriptives file=data/data_survei_resiliensi_300.csv columns='["Pre_Test","Post_Test"]'`
-     - Hasil yang benar: Pre_Test M = 58.41, SD = 6.34; Post_Test M = 71.88, SD = 11.72; n = 300. Bila muncul
-       `Kolom tidak ada: ['[']`, tanda kutipnya belum sesuai shell.
+1. Minta pengguna memulai ulang sesi agen (skill, dan server MCP bila dipasang, dimuat saat sesi dibuka).
+2. Di sesi baru, dari folder mana pun, uji dengan data contoh repo:
+   - "Jalankan descriptives pada `<repo>/data/data_survei_resiliensi_300.csv` untuk kolom Pre_Test dan Post_Test
+     dengan edu-stats." Agen harus menjalankan perintah `edu-stats` (atau alat MCP bila dipasang), bukan menghitung
+     sendiri.
+   - Perintah langsungnya (sama di PowerShell, cmd, dan bash):
+     `edu-stats run descriptives file=<repo>/data/data_survei_resiliensi_300.csv columns=Pre_Test,Post_Test`
+   - Hasil yang benar: Pre_Test M = 58.41, SD = 6.34; Post_Test M = 71.88, SD = 11.72; n = 300.
 
 ## Langkah 6 · Laporkan ke pengguna
 

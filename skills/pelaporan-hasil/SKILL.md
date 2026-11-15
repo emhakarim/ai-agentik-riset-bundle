@@ -19,9 +19,8 @@ menghitung apa pun**; bila suatu angka belum ada, jalankan dulu alatnya (lihat s
    tidak signifikan, dan peringatan di `notes`.
 5. **Simpan `audit_id`** setiap analisis di catatan kerja / lampiran (bukan di badan teks naskah), agar hasil
    bisa dibuktikan ulang dengan alat `replay`.
-6. **Bila keluaran alat belum ada**, jalankan dulu analisisnya lewat skill `analisis-kuantitatif`. Bila alat MCP
-   edu-stats tidak tersedia di sesi ini, ikuti §7 skill itu: CLI edu-stats sebagai cadangan, lalu tawarkan
-   mengaktifkan server MCP untuk sesi berikutnya.
+6. **Bila keluaran alat belum ada**, jalankan dulu analisisnya lewat skill `analisis-kuantitatif` (perintah
+   `edu-stats`, skill itu §7), lalu tulis dari keluaran JSON-nya.
 
 ## 2. Format angka APA 7
 

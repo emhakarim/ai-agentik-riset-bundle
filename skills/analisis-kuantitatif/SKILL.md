@@ -1,19 +1,22 @@
 ---
 name: analisis-kuantitatif
-description: Alur analisis statistik kuantitatif untuk riset pendidikan (skripsi, tesis, artikel) memakai MCP edu-stats — cek data, uji asumsi, pilih uji yang tepat, ukuran efek, dan tafsir — tanpa AI menghitung sendiri. Pakai saat pengguna meminta uji-t, ANOVA, ANCOVA, korelasi, regresi, chi-square, uji nonparametrik, uji normalitas/homogenitas, uji prasyarat, uji hipotesis, reliabilitas/validitas angket, N-Gain, atau ukuran sampel/power, atau menyerahkan file data (.csv, .xlsx, .sav, .dta) untuk dianalisis.
+description: Alur analisis statistik kuantitatif untuk riset pendidikan (skripsi, tesis, artikel) memakai alat edu-stats lewat CLI — cek data, uji asumsi, pilih uji yang tepat, ukuran efek, dan tafsir — tanpa AI menghitung sendiri. Pakai saat pengguna meminta uji-t, ANOVA, ANCOVA, korelasi, regresi, chi-square, uji nonparametrik, uji normalitas/homogenitas, uji prasyarat, uji hipotesis, reliabilitas/validitas angket, N-Gain, atau ukuran sampel/power, atau menyerahkan file data (.csv, .xlsx, .sav, .dta) untuk dianalisis.
 ---
 
 # Analisis Kuantitatif Pendidikan (edu-stats)
 
 Skill ini memandu memilih dan menjalankan analisis statistik. **Semua angka dihitung oleh alat
-`edu-stats`, bukan oleh Anda.** Peran Anda: memahami pertanyaan riset, memilih uji, memanggil alat,
-membaca asumsi, dan menafsirkan. Untuk menulis Bab IV / bagian Hasil, lanjutkan dengan skill
-`pelaporan-hasil`.
+`edu-stats`, bukan oleh Anda.** Peran Anda: memahami pertanyaan riset, memilih uji, menjalankan alat
+lewat perintah `edu-stats` (CLI, §7), membaca asumsi, dan menafsirkan. Untuk menulis Bab IV / bagian Hasil,
+lanjutkan dengan skill `pelaporan-hasil`.
+
+Penulisan alat di skill ini, mis. `ttest_independent(file, dv, group)`, artinya perintah
+`edu-stats run ttest_independent file=... dv=... group=...` (lihat §7).
 
 ## 1. Aturan keras (tidak boleh dilanggar)
 
 1. **Jangan menghitung sendiri.** Rerata, SD, t, F, p, r, d, α, N-Gain, ukuran sampel — semuanya dari
-   keluaran alat. Bila alat tidak tersedia, katakan begitu dan tawarkan CLI cadangan (§7); jangan menaksir.
+   keluaran alat. Bila edu-stats tidak terpasang, katakan begitu dan tawarkan pemasangan (§7); jangan menaksir.
 2. **Jangan menulis angka yang tidak ada di keluaran alat.** Bulatkan dari nilai presisi penuh di `result`,
    jangan menghitung ulang turunan (mis. jangan menghitung η² dari F sendiri).
 3. **Kata "signifikan" hanya mengikuti field `significant` / `keputusan`.** Jangan menulis "signifikan" bila
@@ -30,7 +33,7 @@ membaca asumsi, dan menafsirkan. Untuk menulis Bab IV / bagian Hasil, lanjutkan 
    rumusan masalah / hipotesis, desain (eksperimen, kuasi-eksperimen, korelasional, survei, PTK),
    variabel bebas & terikat beserta skala ukurnya, kelompok, α (default .05), satu atau dua sisi
    (default dua sisi; satu sisi hanya bila hipotesisnya terarah *dan* ditetapkan sebelum melihat data).
-   Pastikan alat edu-stats tersedia; bila tidak, ikuti §7 (CLI cadangan, lalu tawarkan mengaktifkan MCP).
+   Pastikan perintah `edu-stats` tersedia (`edu-stats list`); bila tidak, ikuti §7.
 2. **Kenali data:** `inspect_data(file)` — nama kolom persis, tipe, data kosong, value label SPSS.
    Pakai nama kolom persis seperti hasil ini.
 3. **Siapkan skor** bila data berupa butir angket:
@@ -128,37 +131,37 @@ Pengguna: "Data saya pretest dan posttest kelas eksperimen (PBL) dan kontrol, ap
 5. Tafsir: F, p, ηp² dan labelnya, rerata terkoreksi tiap kelas; karena kuasi-eksperimen (kelas utuh),
    hindari klaim kausal mutlak. Sertakan `audit_id`.
 
-## 7. Bila alat MCP edu-stats tidak tersedia
+## 7. Menjalankan alat: CLI `edu-stats` (jalur utama)
 
-**Cek di awal, sebelum langkah 2 alur kerja:** apakah alat edu-stats (`inspect_data`, `ttest_independent`, dst.) ada
-di sesi ini? Di Claude Code alat MCP biasanya *ditunda* (hanya namanya yang terlihat) dan dimuat lewat pencarian alat
-saat dibutuhkan; itu berarti aktif, pakai saja. Bila alatnya benar-benar tidak ada, server MCP-nya mati atau belum
-terdaftar. Server MCP baru tersambung saat sesi dibuka, jadi tidak bisa dinyalakan di tengah sesi ini. Lakukan:
+Semua alat dijalankan lewat perintah terminal `edu-stats`. Hasilnya JSON yang sama persis dengan keluaran alat di
+skill ini (`result`, `apa`, `assumptions`, `effect_size`, `notes`, `audit`) dan tercatat di audit untuk `replay`.
 
-1. **Jangan menghitung sendiri; lanjutkan lewat CLI edu-stats** (hasil sama, tercatat di audit yang sama).
-   Cari Python virtualenv edu-stats: lokasi bawaan `~/ai-agentik-riset-bundle/mcp-edu-stats/.venv`
-   (Windows `.venv\Scripts\python.exe`, macOS/Linux `.venv/bin/python`). Bila tidak ada, cari folder
-   `mcp-edu-stats` lain di komputer pengguna atau tanyakan lokasinya; jangan menebak. Contoh:
+```
+edu-stats list                                   daftar alat
+edu-stats help ancova                            parameter satu alat, wajib dan opsional
+edu-stats run inspect_data file=nilai.csv
+edu-stats run ttest_independent file=nilai.csv dv=posttest group=kelas groups=Eksperimen,Kontrol
+edu-stats run ancova file=nilai.csv dv=posttest group=kelas covariates=pretest
+edu-stats run reliability file=angket.csv items=B1,B2,B3,B4
+edu-stats run ancova --params analisis.json      parameter dari berkas JSON (untuk yang panjang)
+edu-stats replay <audit_id>
+```
 
-   ```
-   <venv-python> -m edu_stats.cli list
-   <venv-python> -m edu_stats.cli run ancova file=nilai.csv dv=posttest group=kelas covariates='["pretest"]'
-   <venv-python> -m edu_stats.cli replay <audit_id>
-   ```
-
-   Di PowerShell, tanda kutip JSON ditulis `covariates='[\"pretest\"]'`; di cmd `covariates="[\"pretest\"]"`.
-2. **Tawarkan mengaktifkan MCP untuk sesi berikutnya** (minta izin dulu; ubah konfigurasi tingkat pengguna, bukan
-   folder proyek, dan cadangkan berkas konfigurasi sebelum diubah):
-   - Terdaftar tetapi dimatikan (di Claude Code tampil *disabled* di panel `/mcp`): minta pengguna menyalakannya di
-     panel `/mcp`.
-   - Belum terdaftar: Claude Code
-     `claude mcp add --scope user edu-stats -- "<venv-python absolut>" -m edu_stats.server`
-     (bila perintah `claude` tidak ada, tambahkan entri yang sama ke `mcpServers` di `~/.claude.json`);
-     Antigravity: entri yang sama di `mcp_config.json` global (menu MCP › View raw config);
-     Codex: blok `[mcp_servers.edu-stats]` di `~/.codex/config.toml`.
-   - Pernah dinonaktifkan dengan skrip workshop: jalankan `~/.claude/nyalakan-edu-stats-mcp.py` bila ada.
-   - Setelah itu minta pengguna memulai sesi baru agar alat MCP termuat.
-3. **Bila edu-stats sama sekali tidak terpasang:** katakan terus terang, tawarkan pemasangan menurut `INSTALL.md` di
-   https://github.com/emhakarim/ai-agentik-riset-bundle, dan jangan menghitung sendiri.
+Aturan memakai CLI:
+- **Parameter daftar** (`columns`, `items`, `raters`, `groups`, `covariates`, `predictors`, `factors`, `reverse`)
+  ditulis dipisah koma **tanpa tanda kutip**: `items=B1,B2,B3`. Cara ini sama di PowerShell, cmd, dan bash.
+  Nama kolom yang memuat spasi atau koma: pakai `--params berkas.json`.
+- **Urutan kelompok** uji-t ditentukan `groups=` (mis. `groups=Program,Kontrol`); tanpa itu dipakai urutan abjad
+  sehingga tanda t dan d bisa terbalik.
+- **Ambil angka dari keluaran perintah**, simpan keluaran ke berkas bila perlu (`edu-stats run ... > hasil.json`).
+  Jangan mengetik ulang angka dari ingatan.
+- **Bila perintah gagal**, baca pesan galatnya (menyebut parameter yang tersedia atau kolom yang ada), lalu perbaiki
+  perintahnya atau jalankan `edu-stats help <alat>`. **Jangan beralih menulis skrip hitungan sendiri.**
+- **Bila `edu-stats` tidak dikenal di terminal:** pakai Python virtualenv-nya, `<venv-python> -m edu_stats.cli ...`
+  (lokasi bawaan `~/ai-agentik-riset-bundle/mcp-edu-stats/.venv`, Windows `.venv\Scripts\python.exe`, macOS/Linux
+  `.venv/bin/python`); bila tidak ada, tanyakan lokasinya. Bila edu-stats belum terpasang sama sekali, katakan terus
+  terang, tawarkan pemasangan menurut `INSTALL.md` di https://github.com/emhakarim/ai-agentik-riset-bundle, dan jangan
+  menghitung sendiri.
+- Bila alat MCP edu-stats kebetulan aktif di sesi ini, boleh dipakai; hasilnya sama dengan CLI.
 Alat Zetta (`run_ancova_experiment`, `run_psychometrics`) memakai edu-stats bila terpasang dan sudah
 diverifikasi setara (lihat `KOLABORASI.md` di root repo).

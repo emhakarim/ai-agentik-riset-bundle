@@ -1,12 +1,12 @@
 ---
 name: pengembangan-instrumen
-description: Alur pengembangan dan validasi instrumen penelitian pendidikan (angket/skala Likert, tes pilihan ganda, lembar validasi produk R&D) memakai MCP edu-stats — kisi-kisi, validitas isi oleh ahli (Aiken's V, CVR Lawshe), uji coba, validitas butir, reliabilitas (α, ω, KR-20), tingkat kesukaran, daya beda, dan analisis pengecoh. Pakai saat pengguna menyusun, memvalidasi, atau menganalisis hasil uji coba instrumen, atau menyebut validasi ahli, expert judgment, uji validitas, uji reliabilitas, analisis butir/item.
+description: Alur pengembangan dan validasi instrumen penelitian pendidikan (angket/skala Likert, tes pilihan ganda, lembar validasi produk R&D) memakai alat edu-stats lewat CLI — kisi-kisi, validitas isi oleh ahli (Aiken's V, CVR Lawshe), uji coba, validitas butir, reliabilitas (α, ω, KR-20), tingkat kesukaran, daya beda, dan analisis pengecoh. Pakai saat pengguna menyusun, memvalidasi, atau menganalisis hasil uji coba instrumen, atau menyebut validasi ahli, expert judgment, uji validitas, uji reliabilitas, analisis butir/item.
 ---
 
 # Pengembangan & Validasi Instrumen (edu-stats)
 
 Semua angka dari alat `edu-stats`; jangan menghitung sendiri. Aturan keras dari skill `analisis-kuantitatif`
-(§1) berlaku juga di sini. Untuk menuliskan hasilnya pakai skill `pelaporan-hasil`.
+(§1) berlaku juga di sini, begitu juga cara menjalankan alat lewat perintah `edu-stats` (skill itu §7). Untuk menuliskan hasilnya pakai skill `pelaporan-hasil`.
 
 ## 1. Tahapan
 
@@ -73,17 +73,20 @@ Pertimbangan keputusan:
   pengecohnya, butir tidak harus dibuang.
 - Butir uraian/politomus: pakai `reliability` (α) dan r item-total, bukan `item_analysis_cognitive`.
 
-## 5. Bila alat MCP edu-stats tidak tersedia
+## 5. Menjalankan alat lewat CLI
 
-Cek di awal apakah alat edu-stats (`aiken_v`, `reliability`, dst.) ada di sesi ini (di Claude Code bisa berstatus
-*ditunda* dan dimuat saat dibutuhkan; itu berarti aktif). Bila tidak ada, ikuti prosedur §7 skill
-`analisis-kuantitatif`: jangan menghitung sendiri, lanjutkan lewat CLI edu-stats dari virtualenv-nya, lalu tawarkan
-mengaktifkan server MCP (tingkat pengguna) untuk sesi berikutnya. Contoh CLI:
+Jalankan alat dengan perintah `edu-stats`, mengikuti aturan di skill `analisis-kuantitatif` §7 (parameter daftar
+dipisah koma tanpa tanda kutip; bila perintah gagal, perbaiki perintahnya, jangan menghitung sendiri). Contoh:
 
 ```
-<venv-python> -m edu_stats.cli run aiken_v file=validasi_ahli.csv raters='["Ahli1","Ahli2","Ahli3"]' scale_min=1 scale_max=5
-<venv-python> -m edu_stats.cli run reliability file=ujicoba.csv items='["B1","B2","B3","B4"]'
+edu-stats help aiken_v
+edu-stats run aiken_v file=validasi_ahli.csv raters=Ahli1,Ahli2,Ahli3 scale_min=1 scale_max=5
+edu-stats run cvr_lawshe file=validasi_ahli.csv raters=Ahli1,Ahli2,Ahli3 essential=3
+edu-stats run reliability file=ujicoba.csv items=B1,B2,B3,B4
+edu-stats run item_analysis_cognitive --params analisis_butir.json
 ```
+
+Bila `edu-stats` tidak dikenal di terminal, pakai `<venv-python> -m edu_stats.cli ...` seperti dijelaskan di sana.
 
 ## 6. Yang belum tersedia
 
