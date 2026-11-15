@@ -73,7 +73,19 @@ Pertimbangan keputusan:
   pengecohnya, butir tidak harus dibuang.
 - Butir uraian/politomus: pakai `reliability` (α) dan r item-total, bukan `item_analysis_cognitive`.
 
-## 5. Yang belum tersedia
+## 5. Bila alat MCP edu-stats tidak tersedia
+
+Cek di awal apakah alat edu-stats (`aiken_v`, `reliability`, dst.) ada di sesi ini (di Claude Code bisa berstatus
+*ditunda* dan dimuat saat dibutuhkan; itu berarti aktif). Bila tidak ada, ikuti prosedur §7 skill
+`analisis-kuantitatif`: jangan menghitung sendiri, lanjutkan lewat CLI edu-stats dari virtualenv-nya, lalu tawarkan
+mengaktifkan server MCP (tingkat pengguna) untuk sesi berikutnya. Contoh CLI:
+
+```
+<venv-python> -m edu_stats.cli run aiken_v file=validasi_ahli.csv raters='["Ahli1","Ahli2","Ahli3"]' scale_min=1 scale_max=5
+<venv-python> -m edu_stats.cli run reliability file=ujicoba.csv items='["B1","B2","B3","B4"]'
+```
+
+## 6. Yang belum tersedia
 
 - EFA/CFA dan Rasch/IRT belum ada di edu-stats (rencana Fase 2–3). Katakan terus terang bila diminta;
   jangan menghitung sendiri.
