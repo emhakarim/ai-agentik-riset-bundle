@@ -143,6 +143,7 @@ disalin (dan ke mana), hasil uji, serta langkah yang gagal atau dilewati.
 |---|---|
 | `python` tidak dikenal | Pakai `python3` atau `py -3`; bila tidak ada, minta pengguna memasang Python 3.10+ dari python.org |
 | Galat SSL saat pip | `PIP_USE_FEATURE=truststore` (langkah 2) |
+| `Connection broken: InvalidChunkLength` atau unduhan terputus saat pip | Jaringan/proxy memutus unduhan besar (numpy, scipy, pandas). Ulangi dengan `--retries 10 --timeout 60`; bila tetap gagal, minta pengguna pindah jaringan (mis. hotspot ponsel) lalu ulangi. Jangan mencoba melewati proxy atau mematikan verifikasi sertifikat |
 | Alat MCP tidak muncul | Periksa path absolut `VENVPY`, lalu mulai ulang sesi agen; sementara pakai CLI |
 | Skill tidak terpanggil | Pastikan tiap skill berada di foldernya sendiri dengan `SKILL.md`, lalu mulai ulang sesi |
 
