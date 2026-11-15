@@ -1,0 +1,13 @@
+ID_Partisipan,Nama_Samaran,Peran,Jenjang_Konteks,Zona_Sekolah,Gender,Sekolah_Fiktif,Berkas_Transkrip,Jumlah_Kata,Jumlah_Kata_Dialog,Status_Anonimisasi
+P01,Nadia (Fiktif),Siswa SMA,Kelas 11 SMA,Urban,P,SMA Negeri 99 Kota Nusantara (Fiktif),transkrip/P01_siswa_sma_urban.md,804,670,Anonim
+P02,Raka (Fiktif),Siswa SMA,Kelas 12 SMA,Urban,L,SMA Negeri 99 Kota Nusantara (Fiktif),transkrip/P02_siswa_sma_urban.md,762,628,Anonim
+P03,Dion (Fiktif),Siswa SMP,Kelas 9 SMP,Urban,L,SMP Harapan Bangsa Kota Nusantara (Fiktif),transkrip/P03_siswa_smp_urban.md,780,647,Anonim
+P04,Siti (Fiktif),Siswa SMP,Kelas 8 SMP,Rural,P,SMP Negeri 44 Lembah Hijau (Fiktif),transkrip/P04_siswa_smp_rural.md,791,658,Anonim
+P05,Bagas (Fiktif),Siswa SMA,Kelas 11 SMA,Rural,L,SMA Negeri 17 Bukit Randu (Fiktif),transkrip/P05_siswa_sma_rural.md,744,611,Anonim
+P06,Lestari (Fiktif),Siswa SMA,Kelas 10 SMA,Rural,P,SMA Negeri 17 Bukit Randu (Fiktif),transkrip/P06_siswa_sma_rural.md,756,624,Anonim
+P07,Ibu Ratna (Fiktif),Guru,Guru Matematika SMA,Urban,P,SMA Negeri 99 Kota Nusantara (Fiktif),transkrip/P07_guru_urban.md,749,618,Anonim
+P08,Pak Hendra (Fiktif),Guru,Guru IPA SMP,Rural,L,SMP Negeri 44 Lembah Hijau (Fiktif),transkrip/P08_guru_rural.md,738,607,Anonim
+P09,Ibu Maya (Fiktif),Guru,Guru BK SMP,Urban,P,SMP Harapan Bangsa Kota Nusantara (Fiktif),transkrip/P09_guru_urban.md,743,612,Anonim
+P10,Pak Taufik (Fiktif),Guru,Guru Bahasa Indonesia SMA,Rural,L,SMA Negeri 17 Bukit Randu (Fiktif),transkrip/P10_guru_rural.md,747,616,Anonim
+P11,Ibu Sri (Fiktif),Orang Tua,Wali Siswa SMA,Urban,P,SMA Negeri 99 Kota Nusantara (Fiktif),transkrip/P11_orang_tua_urban.md,751,617,Anonim
+P12,Pak Suryo (Fiktif),Orang Tua,Wali Siswa SMP,Rural,L,SMP Negeri 44 Lembah Hijau (Fiktif),transkrip/P12_orang_tua_rural.md,808,674,Anonim
