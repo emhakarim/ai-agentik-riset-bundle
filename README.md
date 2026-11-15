@@ -21,8 +21,8 @@ dan `latihan/` **sepenuhnya sintetis**, bukan data orang sungguhan.
 
 Buka Claude Code, Antigravity, atau Codex, lalu tempel prompt ini:
 
-> Pasang toolkit workshop dari https://github.com/emhakarim/ai-agentik-riset-bundle. Baca dan ikuti INSTALL.md di
-> repo itu langkah demi langkah. Jelaskan setiap perintah sebelum dijalankan dan minta izin saya.
+> Pasang toolkit dari https://github.com/emhakarim/ai-agentik-riset-bundle sesuai INSTALL.md, langkah demi langkah.
+> Pasang skill dan server MCP secara global, bukan di folder proyek. Jelaskan tiap perintah dan minta izin saya.
 
 Agen akan mengunduh repo, membuat virtualenv, memasang edu-stats dan paper-check, mendaftarkan server MCP, dan
 menyalin skill, sambil meminta izin di setiap langkah. Petunjuk lengkap untuk agen ada di `INSTALL.md`; bacalah

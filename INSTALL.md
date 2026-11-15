@@ -3,8 +3,25 @@
 Berkas ini ditulis untuk dibaca **agen AI** (Claude Code, Antigravity, Codex) yang diminta pengguna memasang toolkit
 ini. Pengguna cukup menempelkan prompt seperti:
 
-> Pasang toolkit workshop dari https://github.com/emhakarim/ai-agentik-riset-bundle. Baca dan ikuti INSTALL.md di
-> repo itu langkah demi langkah. Jelaskan setiap perintah sebelum dijalankan dan minta izin saya.
+> Pasang toolkit dari https://github.com/emhakarim/ai-agentik-riset-bundle sesuai INSTALL.md, langkah demi langkah.
+> Pasang skill dan server MCP secara global, bukan di folder proyek. Jelaskan tiap perintah dan minta izin saya.
+
+## Target: pasang GLOBAL, bukan di folder proyek
+
+Tujuan pemasangan ini adalah toolkit yang bisa dipakai pengguna **di semua proyek**, dari folder mana pun:
+
+- **Skill** disalin ke folder skill **global** agen (tabel di langkah 4), misalnya `~/.claude/skills/` untuk Claude
+  Code. **Jangan** menyalin skill ke folder kerja atau proyek yang sedang dibuka (`./.claude/skills/`,
+  `./.agents/skills/`, `./.agent/skills/`), kecuali pengguna memintanya secara eksplisit.
+- **Server MCP** didaftarkan di konfigurasi **tingkat pengguna** (langkah 3): `claude mcp add --scope user`,
+  `~/.claude.json`, `mcp_config.json` global Antigravity, atau `~/.codex/config.toml`. **Jangan** membuat `.mcp.json`
+  atau konfigurasi MCP di dalam folder proyek.
+- **Folder repo** hanyalah tempat unduhan dan virtualenv. Simpan di lokasi tetap di luar proyek, bawaan
+  `~/ai-agentik-riset-bundle`, karena server MCP menunjuk ke virtualenv di dalamnya; jangan menghapus atau
+  memindahkannya setelah terpasang.
+- Bila agen hanya diizinkan menulis di folder kerja (sandbox), jelaskan itu ke pengguna dan minta izin menulis ke
+  folder global, atau berikan perintahnya agar pengguna menjalankannya sendiri. Jangan diam-diam beralih ke folder
+  proyek.
 
 ## Aturan untuk agen
 
@@ -64,7 +81,9 @@ kosong minimal 1 GB; bila koneksi pengguna terbatas, sarankan jaringan yang stab
 
 ## Langkah 1 · Ambil berkas
 
-Tanyakan lokasi yang diinginkan pengguna; bawaan: folder home pengguna.
+Bawaan: folder home pengguna, sehingga repo berada di `~/ai-agentik-riset-bundle` (Windows:
+`C:\Users\<nama>\ai-agentik-riset-bundle`), **bukan** di dalam folder proyek yang sedang dibuka. Tawarkan lokasi itu
+dan pakai lokasi lain hanya bila pengguna memintanya. Jalankan clone dari folder home:
 
 ```
 git clone https://github.com/emhakarim/ai-agentik-riset-bundle.git
@@ -172,8 +191,8 @@ Skill adalah folder berisi `SKILL.md`. Salin **16 folder**: 15 folder di dalam `
 `<tujuan>/analisis-kuantitatif/SKILL.md`). Sebelum menyalin, daftar nama yang sudah ada di folder tujuan dan
 tanyakan pengguna untuk setiap nama yang bertabrakan.
 
-Bawaan: pasang sebagai **skill global** (berlaku di semua proyek). Tanyakan pengguna bila ingin hanya untuk satu
-proyek.
+Pasang sebagai **skill global** (berlaku di semua proyek), ke kolom tengah tabel ini. Kolom kanan hanya dipakai bila
+pengguna secara eksplisit meminta skill untuk satu proyek saja.
 
 | Agen | Skill global (semua proyek) | Skill proyek (satu folder kerja) |
 |---|---|---|
@@ -222,7 +241,10 @@ folder yang disetujui untuk ditimpa disalin tersendiri setelah dicadangkan:
   for d in skills/*/ academic-humanizer/; do n=$(basename "$d"); [ -e "$tujuan/$n" ] || cp -r "${d%/}" "$tujuan/"; done
   ```
 
-Terakhir, periksa bahwa tiap folder skill di tujuan berisi `SKILL.md`. Jangan menimpa folder skill yang sudah ada
+Terakhir, **buktikan lokasinya**: tampilkan isi folder skill global (PowerShell
+`Get-ChildItem $tujuan -Directory | ForEach-Object Name`; bash `ls "$tujuan"`) dan pastikan ke-16 folder ada di
+sana, masing-masing berisi `SKILL.md`. Pastikan juga **tidak ada** folder `.claude/skills`, `.agents/skills`, atau
+`.agent/skills` baru di folder kerja saat ini; bila ada karena salah langkah, beri tahu pengguna. Jangan menimpa folder skill yang sudah ada
 tanpa bertanya.
 
 ## Langkah 5 · Muat ulang dan uji
@@ -240,8 +262,9 @@ tanpa bertanya.
 
 ## Langkah 6 · Laporkan ke pengguna
 
-Ringkas: lokasi repo, versi Python, apa yang terpasang, server MCP yang terdaftar (dan di berkas mana), skill yang
-disalin (dan ke mana), hasil uji, serta langkah yang gagal atau dilewati.
+Ringkas, dengan **path absolut**: lokasi repo, versi Python, apa yang terpasang, server MCP yang terdaftar (dan di
+berkas konfigurasi global mana), folder skill global tempat ke-16 skill disalin, hasil uji, serta langkah yang gagal
+atau dilewati.
 
 ## Langkah 7 · Bila ada masalah
 
@@ -253,6 +276,7 @@ disalin (dan ke mana), hasil uji, serta langkah yang gagal atau dilewati.
 | `Connection broken: InvalidChunkLength` atau unduhan terputus saat pip | Jaringan/proxy memutus unduhan besar (numpy, scipy, pandas). Ulangi dengan `--retries 10 --timeout 60`; bila tetap gagal, minta pengguna pindah jaringan (mis. hotspot ponsel) lalu ulangi. Jangan mencoba melewati proxy atau mematikan verifikasi sertifikat |
 | Alat MCP tidak muncul | Periksa path absolut `VENVPY`, lalu mulai ulang sesi agen; sementara pakai CLI |
 | Skill tidak terpanggil | Pastikan tiap skill berada di foldernya sendiri dengan `SKILL.md`, lalu mulai ulang sesi |
+| Skill atau MCP hanya muncul di satu proyek | Terpasang di folder proyek, bukan global. Dengan izin pengguna, pindahkan folder skill ke folder global (langkah 4) dan daftarkan ulang MCP di konfigurasi tingkat pengguna (langkah 3), lalu hapus salinan di proyek |
 
 ## Langkah 8 · academic-research-skills (hanya bila pengguna meminta)
 

@@ -11,8 +11,8 @@ Pakai jaringan yang stabil; unduhan besar paling sering terputus di jaringan kam
 
 Setelah Python (langkah 1) dan satu agen (langkah 2) terpasang, buka agen lalu tempel prompt ini:
 
-> Pasang toolkit workshop dari https://github.com/emhakarim/ai-agentik-riset-bundle. Baca dan ikuti INSTALL.md di
-> repo itu langkah demi langkah. Jelaskan setiap perintah sebelum dijalankan dan minta izin saya.
+> Pasang toolkit dari https://github.com/emhakarim/ai-agentik-riset-bundle sesuai INSTALL.md, langkah demi langkah.
+> Pasang skill dan server MCP secara global, bukan di folder proyek. Jelaskan tiap perintah dan minta izin saya.
 
 Agen akan mengerjakan langkah 3 dan 4 di bawah untuk Anda, dengan meminta izin di setiap langkah. Langkah
 manual di bawah tetap berlaku bila Anda ingin memasang sendiri.
