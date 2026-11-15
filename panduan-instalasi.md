@@ -56,10 +56,17 @@ python -m venv .venv
 
 ## 4. Skill
 
-Salin folder skill dari `skills/` di bundle ke:
+Salin tiap folder skill dari `skills/` (dan `academic-humanizer/`) di bundle ke folder skill **global** agen Anda,
+supaya berlaku di semua proyek:
 
 - Claude Code: `~/.claude/skills/` (Windows: `C:\Users\<nama>\.claude\skills\`)
-- Antigravity: `<folder proyek>/.agents/skills/`
+- Antigravity: `~/.gemini/config/skills/` (Windows: `C:\Users\<nama>\.gemini\config\skills\`)
+- Codex: `~/.agents/skills/` (Windows: `C:\Users\<nama>\.agents\skills\`)
+- claude.ai / Claude Desktop: unggah ZIP per skill di Customize › Skills; ZIP-nya ada di halaman rilis GitHub
+  (`skill-zip-untuk-claude-ai.zip`).
+
+Untuk satu proyek saja: `<folder proyek>/.claude/skills/` (Claude Code) atau `<folder proyek>/.agents/skills/`
+(Antigravity, Codex).
 
 Skill pihak ketiga **academic-research-skills** (Imbad0202, CC BY-NC 4.0) tidak ada di bundle; cara pasang resminya ada
 di `README.md` bagian academic-research-skills.

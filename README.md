@@ -32,7 +32,16 @@ sekilas sebelum menyetujui. Biasakan begitu untuk setiap instruksi dari internet
 
 Ikuti `panduan-instalasi.md`. Ringkasnya:
 
-- **Skill:** salin folder di `skills/` ke `~/.claude/skills/` (Claude Code) atau `<proyek>/.agents/skills/` (Antigravity).
+- **Skill (global, berlaku di semua proyek):** salin tiap folder di `skills/` dan folder `academic-humanizer/` ke:
+
+  | Agen | Folder skill global |
+  |---|---|
+  | Claude Code | `~/.claude/skills/` |
+  | Antigravity | `~/.gemini/config/skills/` |
+  | Codex | `~/.agents/skills/` |
+  | claude.ai / Claude Desktop | unggah ZIP per skill di Customize › Skills (ZIP ada di rilis: `skill-zip-untuk-claude-ai.zip`) |
+
+  Untuk satu proyek saja: `<proyek>/.claude/skills/` (Claude Code) atau `<proyek>/.agents/skills/` (Antigravity, Codex).
 - **edu-stats:** dari folder `mcp-edu-stats`, buat virtualenv lalu `pip install -e ".[dev,server]"`. Daftarkan ke agen
   sebagai server MCP stdio: `<python venv> -m edu_stats.server`. Cadangan tanpa MCP: `python -m edu_stats.cli list`.
 - **paper-check:** dari folder `paper-tools`, `pip install -e .`, lalu `paper-check --help`.

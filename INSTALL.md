@@ -172,13 +172,28 @@ Skill adalah folder berisi `SKILL.md`. Salin **16 folder**: 15 folder di dalam `
 `<tujuan>/analisis-kuantitatif/SKILL.md`). Sebelum menyalin, daftar nama yang sudah ada di folder tujuan dan
 tanyakan pengguna untuk setiap nama yang bertabrakan.
 
-- **Claude Code:** ke `~/.claude/skills/` (Windows: `C:\Users\<nama>\.claude\skills\`).
-- **Antigravity:** ke `<folder kerja/proyek>/.agents/skills/`. Tanyakan folder kerja yang dipakai pengguna.
-- **Codex:** bila versi pengguna mendukung skill, ikuti dokumentasi Codex untuk lokasinya; bila tidak, cukup MCP
-  (langkah 3).
+Bawaan: pasang sebagai **skill global** (berlaku di semua proyek). Tanyakan pengguna bila ingin hanya untuk satu
+proyek.
 
-Contoh perintah untuk Claude Code, dijalankan dari folder repo. Pertama, daftar nama yang bertabrakan dan tampilkan
-ke pengguna:
+| Agen | Skill global (semua proyek) | Skill proyek (satu folder kerja) |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` (Windows: `C:\Users\<nama>\.claude\skills\`) | `<proyek>/.claude/skills/` |
+| Antigravity (IDE) | `~/.gemini/config/skills/` (lama, masih dibaca: `~/.gemini/antigravity/skills/`) | `<proyek>/.agents/skills/` (lama: `.agent/skills/`) |
+| Codex | `~/.agents/skills/` | `<repo>/.agents/skills/` |
+| claude.ai / Claude Desktop | Tidak lewat folder: unggah ZIP per skill (lihat di bawah) | – |
+
+`~` berarti folder home pengguna (Windows: `C:\Users\<nama>`). Bila agen pengguna versi lain memakai lokasi berbeda,
+rujuk dokumentasi resminya; jangan menebak. Codex mendeteksi skill baru otomatis; Claude Code dan Antigravity
+memuatnya di sesi atau percakapan baru.
+
+**claude.ai / Claude Desktop:** aktifkan dulu eksekusi kode (Settings › Capabilities), lalu Customize › Skills ›
+"+" › Upload a skill, satu ZIP per skill. ZIP siap unggah untuk ke-16 skill ada di rilis GitHub
+(`skill-zip-untuk-claude-ai.zip`, ekstrak dulu). Langkah ini dilakukan pengguna di browser, bukan oleh agen.
+
+Contoh perintah di bawah memakai tujuan Claude Code; untuk Antigravity ganti `$tujuan` menjadi
+`$HOME\.gemini\config\skills` (bash: `~/.gemini/config/skills`), untuk Codex `$HOME\.agents\skills`
+(bash: `~/.agents/skills`). Bila pengguna memakai lebih dari satu agen, ulangi untuk tiap tujuan. Jalankan dari
+folder repo. Pertama, daftar nama yang bertabrakan dan tampilkan ke pengguna:
 
 - PowerShell:
   ```
