@@ -51,6 +51,9 @@ Tawarkan dulu, jelaskan apa yang akan dipasang, lalu tunggu persetujuan. Lewati 
 ### Pustaka Python yang akan terpasang
 
 Tidak perlu dipasang satu per satu: `pip install` di langkah 2 mengunduh semuanya dari PyPI ke dalam virtualenv.
+Total unduhan sekitar 90 MB (42 paket; terbesar scipy 37 MB, numpy 13 MB, pandas 11 MB, statsmodels 10 MB) dan
+sekitar 390 MB ruang disk setelah terpasang. Sampaikan ini ke pengguna sebelum langkah 2 dan pastikan ada ruang
+kosong minimal 1 GB; bila koneksi pengguna terbatas, sarankan jaringan yang stabil.
 
 | Untuk | Pustaka |
 |---|---|

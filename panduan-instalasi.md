@@ -3,6 +3,10 @@
 Workshop AI Agentik untuk Riset. Siapkan laptop (Windows/macOS) dengan langkah di bawah. Butuh ±30 menit dan
 koneksi internet. Bila ada kendala, bawa laptop 15 menit sebelum sesi.
 
+**Kuota dan ruang disk:** unduhan sekitar 100–120 MB (pustaka Python sekitar 90 MB, terbesar scipy 37 MB;
+ditambah penginstal Python sekitar 25 MB bila belum ada) dan ruang kosong minimal 1 GB (virtualenv sekitar 390 MB).
+Pakai jaringan yang stabil; unduhan besar paling sering terputus di jaringan kampus/kantor.
+
 ## Cara tercepat
 
 Setelah Python (langkah 1) dan satu agen (langkah 2) terpasang, buka agen lalu tempel prompt ini:
