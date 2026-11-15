@@ -13,7 +13,9 @@ ini. Pengguna cukup menempelkan prompt seperti:
 2. Hanya ubah lokasi yang disebut di berkas ini: folder repo, virtualenv di dalamnya, folder skill agen, dan berkas
    konfigurasi MCP agen. Sebelum mengubah berkas konfigurasi yang sudah ada, buat salinan cadangannya.
 3. Jangan menimpa skill atau server MCP yang sudah ada dengan nama yang sama tanpa bertanya.
-4. Jangan memasang Python, Git, atau perangkat lunak sistem lain tanpa persetujuan; bila belum ada, beri tahu pengguna.
+4. Python, Git, dan Pandoc boleh dipasang **hanya setelah pengguna menyetujui secara eksplisit**, dan hanya dari sumber
+   resmi (winget, Homebrew, apt, atau python.org). Jangan mengetikkan kata sandi administrator; bila perintah meminta
+   `sudo` atau persetujuan admin, minta pengguna yang menjalankannya.
 5. Jangan mengirim data pengguna ke mana pun. Pemasangan hanya mengunduh dari GitHub dan PyPI.
 6. Jangan memasang academic-research-skills kecuali pengguna memintanya (lihat langkah 8), dan jangan pernah mengisi
    `ARS_CROSS_MODEL`.
@@ -22,12 +24,40 @@ ini. Pengguna cukup menempelkan prompt seperti:
 ## Langkah 0 · Cek lingkungan
 
 - Sistem operasi (Windows, macOS, Linux) dan agen yang sedang dipakai.
-- Python 3.10 atau lebih baru: `python --version` (Windows) atau `python3 --version` (macOS/Linux).
+- Python 3.10 atau lebih baru: `python --version` (Windows; bila tidak ada, coba `py -3 --version`) atau
+  `python3 --version` (macOS/Linux).
 - Git: `git --version` (opsional; tanpa Git, pakai ZIP di langkah 1).
+- Pandoc: `pandoc --version` (opsional; hanya untuk skill manuscript-format, konversi ke Word/PDF).
 
-Di bawah, `PY` berarti `python` (Windows) atau `python3` (macOS/Linux), dan `VENVPY` berarti
+Di bawah, `PY` berarti `python` atau `py -3` (Windows) atau `python3` (macOS/Linux), dan `VENVPY` berarti
 `mcp-edu-stats\.venv\Scripts\python.exe` (Windows) atau `mcp-edu-stats/.venv/bin/python` (macOS/Linux), keduanya
 relatif ke folder repo. Saat mendaftarkan MCP, selalu pakai **path absolut**.
+
+## Langkah 0b · Pasang yang belum ada (dengan izin pengguna)
+
+Tawarkan dulu, jelaskan apa yang akan dipasang, lalu tunggu persetujuan. Lewati yang sudah ada.
+
+| | Windows (winget) | macOS | Linux (Debian/Ubuntu) |
+|---|---|---|---|
+| Python 3.12 | `winget install -e --id Python.Python.3.12` | `brew install python@3.12`, atau penginstal dari python.org | `sudo apt install python3 python3-venv python3-pip` (dijalankan pengguna) |
+| Git (opsional) | `winget install -e --id Git.Git` | `xcode-select --install` atau `brew install git` | `sudo apt install git` |
+| Pandoc (opsional) | `winget install -e --id JohnMacFarlane.Pandoc` | `brew install pandoc` | `sudo apt install pandoc` |
+
+- Bila winget atau Homebrew tidak tersedia, arahkan pengguna ke python.org/downloads (Windows: centang **"Add
+  python.exe to PATH"** saat memasang).
+- Setelah memasang, terminal lama belum mengenal perintah baru. Buka terminal baru, atau di Windows pakai `py -3.12`.
+- Cek lagi `PY --version` sebelum lanjut.
+
+### Pustaka Python yang akan terpasang
+
+Tidak perlu dipasang satu per satu: `pip install` di langkah 2 mengunduh semuanya dari PyPI ke dalam virtualenv.
+
+| Untuk | Pustaka |
+|---|---|
+| edu-stats | numpy, pandas, scipy, statsmodels, openpyxl (baca Excel), pyreadstat (baca SPSS .sav/Stata) |
+| server MCP (edu-stats dan Zetta) | mcp |
+| paper-check | tidak ada (hanya pustaka bawaan Python) |
+| opsional, untuk menjalankan tes | pytest, pingouin (`pip install -e "./mcp-edu-stats[dev]"`) |
 
 ## Langkah 1 · Ambil berkas
 
@@ -66,7 +96,7 @@ VENVPY -m edu_stats.cli list
 VENVPY -m paper_tools.cli --help
 ```
 
-Perintah pertama menampilkan daftar alat statistik; perintah kedua menampilkan subperintah `paper-check` (gate,
+Cek pustaka yang terpasang: `VENVPY -m pip list`. Perintah uji pertama menampilkan daftar alat statistik; perintah kedua menampilkan subperintah `paper-check` (gate,
 claims, numbers, refs, …). Perintah `paper-check` juga tersedia di folder `Scripts` (Windows) atau `bin` venv.
 
 ## Langkah 3 · Daftarkan server MCP

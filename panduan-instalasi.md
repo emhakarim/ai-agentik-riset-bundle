@@ -16,7 +16,11 @@ manual di bawah tetap berlaku bila Anda ingin memasang sendiri.
 ## 1. Python 3.10 atau lebih baru
 
 - Unduh dari python.org. Saat memasang di Windows, **centang “Add python.exe to PATH”**.
-- Cek di terminal: `python --version`
+- Atau lewat terminal: Windows `winget install -e --id Python.Python.3.12`; macOS `brew install python@3.12`.
+- Cek di terminal (buka terminal baru setelah memasang): `python --version` atau `py -3 --version`.
+- Pustaka pendukung (numpy, pandas, scipy, statsmodels, openpyxl, pyreadstat, mcp) tidak perlu dipasang manual:
+  semuanya ikut terpasang saat toolkit dipasang di langkah 3, baik oleh agen maupun manual.
+- Agen juga bisa memasangkan Python untuk Anda bila Anda mengizinkannya (lihat INSTALL.md langkah 0b).
 
 ## 2. Satu agen AI (pilih minimal satu)
 
