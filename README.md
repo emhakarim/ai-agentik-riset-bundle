@@ -15,7 +15,7 @@ dan `latihan/` **sepenuhnya sintetis**, bukan data orang sungguhan.
 | `paper-tools/` | Perintah `paper-check`: angka, rujukan (Crossref, hanya DOI), klaim, abstrak, PRISMA, surat tanggapan |
 | `academic-humanizer/` | Skill penyuntingan bahasa akademik dari pihak ketiga (AIScientists-Dev, MIT), dengan `LICENSE` dan `SOURCE.md` aslinya |
 | `data/` | `data_survei_resiliensi_300.csv` (survei sintetis, N = 300) dan `kualitatif/` (12 transkrip sintetis, codebook, pengodean dua koder, satu transkrip untuk latihan anonimisasi) |
-| `latihan/` | Bahan latihan workshop: data demo kecil, draf kajian pustaka berisi kesalahan sisipan, dan `refs.bib` |
+| `latihan/` | Bahan latihan workshop: data demo kecil, `demo-cli.md` (mengulang demo 2 dengan skill + CLI edu-stats), draf kajian pustaka berisi kesalahan sisipan, dan `refs.bib` |
 
 ## Cara tercepat: minta agen memasangkan
 
