@@ -3,6 +3,16 @@
 Workshop AI Agentik untuk Riset. Siapkan laptop (Windows/macOS) dengan langkah di bawah. Butuh ±30 menit dan
 koneksi internet. Bila ada kendala, bawa laptop 15 menit sebelum sesi.
 
+## Cara tercepat
+
+Setelah Python (langkah 1) dan satu agen (langkah 2) terpasang, buka agen lalu tempel prompt ini:
+
+> Pasang toolkit workshop dari https://github.com/emhakarim/ai-agentik-riset-bundle. Baca dan ikuti INSTALL.md di
+> repo itu langkah demi langkah. Jelaskan setiap perintah sebelum dijalankan dan minta izin saya.
+
+Agen akan mengerjakan langkah 3 dan 4 di bawah untuk Anda, dengan meminta izin di setiap langkah. Langkah
+manual di bawah tetap berlaku bila Anda ingin memasang sendiri.
+
 ## 1. Python 3.10 atau lebih baru
 
 - Unduh dari python.org. Saat memasang di Windows, **centang “Add python.exe to PATH”**.

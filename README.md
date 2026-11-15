@@ -17,7 +17,18 @@ dan `latihan/` **sepenuhnya sintetis**, bukan data orang sungguhan.
 | `data/` | `data_survei_resiliensi_300.csv` (survei sintetis, N = 300) dan `kualitatif/` (12 transkrip sintetis, codebook, pengodean dua koder, satu transkrip untuk latihan anonimisasi) |
 | `latihan/` | Bahan latihan workshop: data demo kecil, draf kajian pustaka berisi kesalahan sisipan, dan `refs.bib` |
 
-## Memasang
+## Cara tercepat: minta agen memasangkan
+
+Buka Claude Code, Antigravity, atau Codex, lalu tempel prompt ini:
+
+> Pasang toolkit workshop dari https://github.com/emhakarim/ai-agentik-riset-bundle. Baca dan ikuti INSTALL.md di
+> repo itu langkah demi langkah. Jelaskan setiap perintah sebelum dijalankan dan minta izin saya.
+
+Agen akan mengunduh repo, membuat virtualenv, memasang edu-stats dan paper-check, mendaftarkan server MCP, dan
+menyalin skill, sambil meminta izin di setiap langkah. Petunjuk lengkap untuk agen ada di `INSTALL.md`; bacalah
+sekilas sebelum menyetujui. Biasakan begitu untuk setiap instruksi dari internet yang akan dijalankan agen.
+
+## Memasang manual
 
 Ikuti `panduan-instalasi.md`. Ringkasnya:
 
