@@ -77,25 +77,25 @@ lalu ekstrak (isinya berada di folder `bundle-peserta-ai-agentik/`).
 ## Langkah 2 · Pasang edu-stats dan paper-check (satu virtualenv)
 
 Jalankan semua perintah langkah 2 dan 5 **dari folder repo** (perintahnya memakai path relatif seperti
-`./mcp-edu-stats` dan `data/...`):
+`./mcp-edu-stats` dan `data/...`). Di PowerShell, path program yang diberi tanda kutip harus diawali `&`, mis.
+`& "C:\...\python.exe" --version`; path tanpa kutip seperti `.\mcp-edu-stats\.venv\Scripts\python.exe` bisa langsung.
 
 ```
 PY -m venv mcp-edu-stats/.venv
-VENVPY -m pip install --upgrade pip
+VENVPY -m pip install --upgrade pip --use-feature=truststore
 VENVPY -m pip install -e "./mcp-edu-stats[server]"
 VENVPY -m pip install -e ./paper-tools
 ```
 
 - **Baca keluaran pip, jangan hanya kode keluarnya.** Upgrade pip bisa gagal karena sertifikat tetapi tetap keluar
   dengan kode 0. Bila keluaran memuat `CERTIFICATE_VERIFY_FAILED` atau `Could not fetch URL`, anggap gagal.
-- **Galat SSL/sertifikat** (umum di jaringan kampus/kantor): ulangi dengan variabel `PIP_USE_FEATURE=truststore` diset
-  **di baris perintah yang sama**, karena variabel lingkungan tidak terbawa ke perintah agen berikutnya:
-  PowerShell `$env:PIP_USE_FEATURE="truststore"; VENVPY -m pip install --upgrade pip`;
-  cmd `set PIP_USE_FEATURE=truststore && VENVPY -m pip install --upgrade pip`;
-  macOS/Linux `PIP_USE_FEATURE=truststore VENVPY -m pip install --upgrade pip`.
-  Setelah pip 24.2 ke atas terpasang, pip memakai sertifikat sistem dengan sendirinya, jadi perintah berikutnya
-  biasanya tidak memerlukan variabel itu lagi. Di PowerShell 5.1, pesan merah `NativeCommandError` dari pip yang
-  sebenarnya berhasil bukan kegagalan; periksa baris terakhir keluarannya.
+- **Galat SSL/sertifikat** (umum di jaringan kampus/kantor): opsi `--use-feature=truststore` di baris kedua membuat
+  pip bawaan venv (24.0 di Python 3.11) memakai penyimpanan sertifikat sistem operasi; ini tidak mematikan
+  verifikasi. Bentuk opsi ini sama di semua shell dan tidak bergantung pada variabel lingkungan (yang tidak terbawa
+  ke perintah agen berikutnya). Setelah pip 24.2 ke atas terpasang, pip memakai sertifikat sistem dengan sendirinya,
+  jadi baris ketiga dan keempat tidak memerlukan opsi itu. Bila `PIP_USE_FEATURE=truststore` tetap diset, pip baru
+  hanya menulis peringatan "features are always enabled: truststore"; di PowerShell 5.1 peringatan itu tampil merah
+  sebagai `NativeCommandError` padahal tidak gagal, jadi periksa baris terakhir keluarannya.
 - **Paket `mcp` tetap gagal terunduh:** pasang tanpa server, `VENVPY -m pip install -e ./mcp-edu-stats`, lalu beri
   tahu pengguna bahwa edu-stats tetap bisa dipakai lewat CLI (`VENVPY -m edu_stats.cli ...`) dengan hasil yang sama,
   tetapi belum sebagai server MCP. Server Zetta (`zetta-mcp/server.py`) juga belum bisa jalan karena memerlukan paket
@@ -168,28 +168,47 @@ args = ["<repo absolut>/zetta-mcp/server.py"]
 ## Langkah 4 · Pasang skill
 
 Skill adalah folder berisi `SKILL.md`. Salin **16 folder**: 15 folder di dalam `skills/` ditambah folder
-`academic-humanizer/`. Sebelum menyalin, daftar nama yang sudah ada di folder tujuan dan tanyakan pengguna untuk setiap
-nama yang bertabrakan.
+`academic-humanizer/`. Yang disalin adalah tiap folder skill, bukan folder `skills/` itu sendiri (hasilnya
+`<tujuan>/analisis-kuantitatif/SKILL.md`). Sebelum menyalin, daftar nama yang sudah ada di folder tujuan dan
+tanyakan pengguna untuk setiap nama yang bertabrakan.
 
 - **Claude Code:** ke `~/.claude/skills/` (Windows: `C:\Users\<nama>\.claude\skills\`).
 - **Antigravity:** ke `<folder kerja/proyek>/.agents/skills/`. Tanyakan folder kerja yang dipakai pengguna.
 - **Codex:** bila versi pengguna mendukung skill, ikuti dokumentasi Codex untuk lokasinya; bila tidak, cukup MCP
   (langkah 3).
 
-Contoh perintah untuk Claude Code (dari folder repo, setelah nama yang bertabrakan dibereskan):
+Contoh perintah untuk Claude Code, dijalankan dari folder repo. Pertama, daftar nama yang bertabrakan dan tampilkan
+ke pengguna:
 
 - PowerShell:
   ```
-  New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
-  Get-ChildItem skills -Directory | ForEach-Object { Copy-Item -Recurse $_.FullName "$HOME\.claude\skills\" }
-  Copy-Item -Recurse academic-humanizer "$HOME\.claude\skills\"
+  $tujuan = "$HOME\.claude\skills"
+  $baru = @(Get-ChildItem .\skills -Directory) + @(Get-Item .\academic-humanizer)
+  $baru | Where-Object { Test-Path (Join-Path $tujuan $_.Name) } | ForEach-Object Name
   ```
-- macOS/Linux (bash):
+- macOS/Linux/Git Bash:
   ```
-  mkdir -p ~/.claude/skills && cp -r skills/* academic-humanizer ~/.claude/skills/
+  tujuan=~/.claude/skills
+  for d in skills/*/ academic-humanizer/; do n=$(basename "$d"); [ -e "$tujuan/$n" ] && echo "$n"; done
   ```
 
-Jangan menimpa folder skill yang sudah ada tanpa bertanya.
+Untuk tiap nama yang bertabrakan, tanyakan apakah folder lama ditimpa (cadangkan dulu, mis. ganti nama menjadi
+`<nama>.bak-<tanggal>`) atau dilewati. Lalu salin; perintah berikut **hanya menyalin folder yang belum ada**, jadi
+folder yang disetujui untuk ditimpa disalin tersendiri setelah dicadangkan:
+
+- PowerShell (lanjutan dari variabel di atas):
+  ```
+  New-Item -ItemType Directory -Force $tujuan | Out-Null
+  $baru | Where-Object { -not (Test-Path (Join-Path $tujuan $_.Name)) } | ForEach-Object { Copy-Item $_.FullName $tujuan -Recurse }
+  ```
+- macOS/Linux/Git Bash:
+  ```
+  mkdir -p "$tujuan"
+  for d in skills/*/ academic-humanizer/; do n=$(basename "$d"); [ -e "$tujuan/$n" ] || cp -r "${d%/}" "$tujuan/"; done
+  ```
+
+Terakhir, periksa bahwa tiap folder skill di tujuan berisi `SKILL.md`. Jangan menimpa folder skill yang sudah ada
+tanpa bertanya.
 
 ## Langkah 5 · Muat ulang dan uji
 
@@ -214,7 +233,8 @@ disalin (dan ke mana), hasil uji, serta langkah yang gagal atau dilewati.
 | Gejala | Coba |
 |---|---|
 | `python` tidak dikenal | Pakai `python3` atau `py -3`; bila tidak ada, minta pengguna memasang Python 3.10+ dari python.org |
-| Galat SSL saat pip | `PIP_USE_FEATURE=truststore` (langkah 2) |
+| Galat SSL saat pip (`CERTIFICATE_VERIFY_FAILED`, kadang dengan kode keluar 0) | Tambahkan `--use-feature=truststore` ke perintah pip (langkah 2) |
+| CLI: `Kolom tidak ada: ['[']` | Tanda kutip JSON tidak sampai ke Python; pakai bentuk perintah sesuai shell di langkah 5 |
 | `Connection broken: InvalidChunkLength` atau unduhan terputus saat pip | Jaringan/proxy memutus unduhan besar (numpy, scipy, pandas). Ulangi dengan `--retries 10 --timeout 60`; bila tetap gagal, minta pengguna pindah jaringan (mis. hotspot ponsel) lalu ulangi. Jangan mencoba melewati proxy atau mematikan verifikasi sertifikat |
 | Alat MCP tidak muncul | Periksa path absolut `VENVPY`, lalu mulai ulang sesi agen; sementara pakai CLI |
 | Skill tidak terpanggil | Pastikan tiap skill berada di foldernya sendiri dengan `SKILL.md`, lalu mulai ulang sesi |
