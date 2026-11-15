@@ -19,7 +19,7 @@ Perintah dan lokasi berkas bisa berubah antarversi; ikuti dokumentasi resmi bila
 
 ## 3. Toolkit
 
-- Unduh folder toolkit dari panitia: [tautan unduhan toolkit].
+- Unduh bundle dari https://github.com/emhakarim/ai-agentik-riset-bundle/releases (berkas ZIP), lalu ekstrak.
 - Pasang edu-stats (dari folder `mcp-edu-stats` di bundle):
 
 ```
