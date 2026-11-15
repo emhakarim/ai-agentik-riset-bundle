@@ -76,7 +76,8 @@ lalu ekstrak (isinya berada di folder `bundle-peserta-ai-agentik/`).
 
 ## Langkah 2 · Pasang edu-stats dan paper-check (satu virtualenv)
 
-Dari folder repo:
+Jalankan semua perintah langkah 2 dan 5 **dari folder repo** (perintahnya memakai path relatif seperti
+`./mcp-edu-stats` dan `data/...`):
 
 ```
 PY -m venv mcp-edu-stats/.venv
@@ -85,12 +86,20 @@ VENVPY -m pip install -e "./mcp-edu-stats[server]"
 VENVPY -m pip install -e ./paper-tools
 ```
 
-- **Galat SSL/sertifikat** (umum di jaringan kampus/kantor): set `PIP_USE_FEATURE=truststore` lalu ulangi
-  (PowerShell: `$env:PIP_USE_FEATURE="truststore"`; cmd: `set PIP_USE_FEATURE=truststore`; macOS/Linux:
-  `export PIP_USE_FEATURE=truststore`).
+- **Baca keluaran pip, jangan hanya kode keluarnya.** Upgrade pip bisa gagal karena sertifikat tetapi tetap keluar
+  dengan kode 0. Bila keluaran memuat `CERTIFICATE_VERIFY_FAILED` atau `Could not fetch URL`, anggap gagal.
+- **Galat SSL/sertifikat** (umum di jaringan kampus/kantor): ulangi dengan variabel `PIP_USE_FEATURE=truststore` diset
+  **di baris perintah yang sama**, karena variabel lingkungan tidak terbawa ke perintah agen berikutnya:
+  PowerShell `$env:PIP_USE_FEATURE="truststore"; VENVPY -m pip install --upgrade pip`;
+  cmd `set PIP_USE_FEATURE=truststore && VENVPY -m pip install --upgrade pip`;
+  macOS/Linux `PIP_USE_FEATURE=truststore VENVPY -m pip install --upgrade pip`.
+  Setelah pip 24.2 ke atas terpasang, pip memakai sertifikat sistem dengan sendirinya, jadi perintah berikutnya
+  biasanya tidak memerlukan variabel itu lagi. Di PowerShell 5.1, pesan merah `NativeCommandError` dari pip yang
+  sebenarnya berhasil bukan kegagalan; periksa baris terakhir keluarannya.
 - **Paket `mcp` tetap gagal terunduh:** pasang tanpa server, `VENVPY -m pip install -e ./mcp-edu-stats`, lalu beri
   tahu pengguna bahwa edu-stats tetap bisa dipakai lewat CLI (`VENVPY -m edu_stats.cli ...`) dengan hasil yang sama,
-  tetapi belum sebagai server MCP.
+  tetapi belum sebagai server MCP. Server Zetta (`zetta-mcp/server.py`) juga belum bisa jalan karena memerlukan paket
+  `mcp`; lewati pendaftarannya di langkah 3.
 
 Uji:
 
@@ -126,7 +135,19 @@ objek `mcpServers` (buat bila belum ada):
 "educational-resilience": { "type": "stdio", "command": "<VENVPY absolut>", "args": ["<repo absolut>/zetta-mcp/server.py"] }
 ```
 
-Di Windows, tulis backslash dalam JSON sebagai `\\`.
+Contoh jadi untuk Windows (repo di `C:\Users\<nama>\ai-agentik-riset-bundle`; backslash ditulis `\\` di JSON):
+
+```json
+"edu-stats": { "type": "stdio", "command": "C:\\Users\\<nama>\\ai-agentik-riset-bundle\\mcp-edu-stats\\.venv\\Scripts\\python.exe", "args": ["-m", "edu_stats.server"] },
+"educational-resilience": { "type": "stdio", "command": "C:\\Users\\<nama>\\ai-agentik-riset-bundle\\mcp-edu-stats\\.venv\\Scripts\\python.exe", "args": ["C:\\Users\\<nama>\\ai-agentik-riset-bundle\\zetta-mcp\\server.py"] }
+```
+
+- Pakai satu gaya pemisah path dalam satu entri (semua backslash di Windows).
+- **Bila `edu-stats` atau `educational-resilience` sudah terdaftar** (mis. dari pemasangan sebelumnya): tanyakan
+  pengguna apakah entri lama diganti (cadangan tetap disimpan) atau entri baru diberi nama lain, mis.
+  `edu-stats-workshop`.
+- Sebaiknya tutup aplikasi Claude saat mengedit `~/.claude.json`, lalu buka lagi setelah selesai, agar perubahan tidak
+  tertimpa oleh aplikasi yang sedang berjalan. Periksa bahwa berkasnya tetap JSON yang sah setelah diedit.
 
 **Antigravity:** buka panel agen › menu MCP › *Manage MCP Servers* › *View raw config* (`mcp_config.json`), lalu
 tambahkan entri yang sama di dalam `mcpServers` (kunci `command` dan `args`). Bila menu atau lokasinya berbeda di
@@ -146,13 +167,27 @@ args = ["<repo absolut>/zetta-mcp/server.py"]
 
 ## Langkah 4 · Pasang skill
 
-Skill adalah folder berisi `SKILL.md`. Salin **setiap folder** di `skills/` (15 skill) dan folder
-`academic-humanizer/`:
+Skill adalah folder berisi `SKILL.md`. Salin **16 folder**: 15 folder di dalam `skills/` ditambah folder
+`academic-humanizer/`. Sebelum menyalin, daftar nama yang sudah ada di folder tujuan dan tanyakan pengguna untuk setiap
+nama yang bertabrakan.
 
 - **Claude Code:** ke `~/.claude/skills/` (Windows: `C:\Users\<nama>\.claude\skills\`).
 - **Antigravity:** ke `<folder kerja/proyek>/.agents/skills/`. Tanyakan folder kerja yang dipakai pengguna.
 - **Codex:** bila versi pengguna mendukung skill, ikuti dokumentasi Codex untuk lokasinya; bila tidak, cukup MCP
   (langkah 3).
+
+Contoh perintah untuk Claude Code (dari folder repo, setelah nama yang bertabrakan dibereskan):
+
+- PowerShell:
+  ```
+  New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+  Get-ChildItem skills -Directory | ForEach-Object { Copy-Item -Recurse $_.FullName "$HOME\.claude\skills\" }
+  Copy-Item -Recurse academic-humanizer "$HOME\.claude\skills\"
+  ```
+- macOS/Linux (bash):
+  ```
+  mkdir -p ~/.claude/skills && cp -r skills/* academic-humanizer ~/.claude/skills/
+  ```
 
 Jangan menimpa folder skill yang sudah ada tanpa bertanya.
 
@@ -162,8 +197,12 @@ Jangan menimpa folder skill yang sudah ada tanpa bertanya.
 2. Di sesi baru, uji dengan data contoh repo:
    - "Jalankan descriptives pada `data/data_survei_resiliensi_300.csv` untuk kolom Pre_Test dan Post_Test lewat
      edu-stats." Agen harus memanggil alat MCP `edu-stats`, bukan menghitung sendiri.
-   - Bila alat MCP belum muncul, gunakan CLI: `VENVPY -m edu_stats.cli run descriptives
-     file=data/data_survei_resiliensi_300.csv columns='["Pre_Test","Post_Test"]'`.
+   - Bila alat MCP belum muncul, gunakan CLI dari folder repo. Penulisan tanda kutip berbeda per shell:
+     - PowerShell: `VENVPY -m edu_stats.cli run descriptives file=data/data_survei_resiliensi_300.csv columns='[\"Pre_Test\",\"Post_Test\"]'`
+     - cmd: `VENVPY -m edu_stats.cli run descriptives file=data/data_survei_resiliensi_300.csv columns="[\"Pre_Test\",\"Post_Test\"]"`
+     - bash/zsh: `VENVPY -m edu_stats.cli run descriptives file=data/data_survei_resiliensi_300.csv columns='["Pre_Test","Post_Test"]'`
+     - Hasil yang benar: Pre_Test M = 58.41, SD = 6.34; Post_Test M = 71.88, SD = 11.72; n = 300. Bila muncul
+       `Kolom tidak ada: ['[']`, tanda kutipnya belum sesuai shell.
 
 ## Langkah 6 · Laporkan ke pengguna
 
